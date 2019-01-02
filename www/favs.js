@@ -1,16 +1,43 @@
-function makeEverythingAppear(boxes)
-{  
-    for(var i=0;i<boxes.length;i++)
-        boxes[i].style.display="block";
-}
+
 $(document).ready(function() {
-    $(".col-4").addClass("jackInTheBox");
+    var fav_sounds=new Array();
+    var v = (window.localStorage.key(0), window.localStorage.getItem("Holt-fav"));
+    console.log(v);
+    setTimeout(function(){
+        if (v===""){
+            console.log("New Array");
+            console.log(fav_sounds);
+        }
+        else {
+            var hmm = window.localStorage.getItem("Holt-fav").split(",");
+            fav_sounds = [];
+            $.each(hmm, function(i, el){
+                if($.inArray(el, fav_sounds) === -1) fav_sounds.push(el);
+            });
+            console.log(fav_sounds);
+            window.localStorage.setItem("Holt-fav",fav_sounds);
+        }
+    },1000);
+    var z;
+    setTimeout(function(){
+        $(".loader").hide();
+        for(z=0;z<=(fav_sounds.length)-1;z++){
+            $(".row").append('<div class="fav-div col-4 animated waves-effect waves-dark">'+fav_sounds[z]+'</div>');
+        }
+        $(".col-4").addClass("jackInTheBox");
+    },1500);
+    setTimeout(function(){
+        function makeEverythingAppear(boxes){  
+        for(var i=0;i<boxes.length;i++){
+            boxes[i].style.display="block";
+        }
+    }
+    
 	var search=0;
 	var mywindow = $(window);
     var mypos = mywindow.scrollTop();
     var boxes=document.getElementsByClassName("col-4");
     var titles=[];
-    var fav_sounds=new Array();
     var currentAudio=0;
 	mywindow.scroll(function() {
     	if(mywindow.scrollTop() > mypos)
@@ -25,7 +52,6 @@ $(document).ready(function() {
     	}
     	mypos = mywindow.scrollTop();
  	});
-    
 	 $('.fixed-action-btn').floatingActionButton();
 	setTimeout(function(){
 		$(".scale-transition").removeClass("scale-out");
@@ -57,12 +83,7 @@ $(document).ready(function() {
     $(".goback2").click(function(){
         window.location.href ="index.html";
     });
-    var e = (window.localStorage.key(0), window.localStorage.getItem("Holt-update-18-12-18"));
-    if (e=="done");
-    else {
-        window.localStorage.setItem("Holt-update-18-12-18", "done");
-        $('.modal').modal('open');
-    }
+    
     $(".col-4").click(function(){
         var texto = String($(this).text().trim());
         texto=texto.substring(0,texto.indexOf('?'))+texto.substring(texto.indexOf('?')+1,texto.len);
@@ -73,29 +94,9 @@ $(document).ready(function() {
         var fileName=String("newSounds/"+texto+".ogg");
         currentAudio.setAttribute('src', fileName);
         currentAudio.setAttribute('autoplay', 'autoplay');
-        currentAudio.play();
-        alert(encodeURIComponent(fileName).value);
-        var fff=encodeURIComponent(fileName).value;
-        var options = {
-            message: 'Check out the Holt Soundboard on the Play Store for more sounds!', // not supported on some apps (Facebook, Instagram)
-            subject: 'Holt Quotes', // fi. for email
-            files: [fff], // an array of filenames either locally or remotely
-            chooserTitle: 'Share the sounds on your favourite app!' // Android only, you can override the default share sheet title,
-        };
-
-        var onSuccess = function(result) {
-            alert("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
-            alert("Shared to app: " + result.app); // On Android result.app since plugin version 5.4.0 this is no longer empty. On iOS it's empty when sharing is cancelled (result.completed=false)
-        };
-        var onError = function(msg) {
-          alert("Sharing failed with message: " + msg);
-        };
-        window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
+        currentAudio.play();        
     });
-    $(".holt-chat").click(function(){
-        var url = "https://holt-chat.firebaseapp.com";
-        var ref = window.open(url, "_blank");
-    });
+   
     $("#last_name").on('input', function(){
         var searchBar=document.getElementById("last_name");
         makeEverythingAppear(boxes);
@@ -107,7 +108,8 @@ $(document).ready(function() {
         }
     });
     $(".paypal-btn").click(function(){
-        window.open('https://paypal.me/Ash110', '_system', 'location=no');
+        var win = window.open("https://paypal.me/Ash110", '_blank');
+        win.focus();
     });
     
     /*                      THEMES                        */
@@ -123,7 +125,6 @@ $(document).ready(function() {
         $(".collapsible-header").css("background-color","#3e3e3e");
         $(".collapsible-header").css("color","white");
         $(".collapsible-header").css("border-bottom","none");
-        $(".time-head").css("color","white");
     }
     else if (theme=="light"){
         $("body").css("background","#ffffff");
@@ -136,7 +137,6 @@ $(document).ready(function() {
         $(".collapsible-header").css("background-color","#ffffff");
         $(".collapsible-header").css("color","black");
         $(".collapsible-header").css("border-bottom","none");
-        $(".time-head").css("color","black");
     }
     else if (theme=="amoled"){
         $("body").css("background","#000000");
@@ -149,7 +149,6 @@ $(document).ready(function() {
         $(".collapsible-header").css("background-color","#000000");
         $(".collapsible-header").css("color","#ffffff");
         $(".collapsible-header").css("border-bottom","none");
-        $(".time-head").css("color","white");  
     }
     $(".dark-mode").click(function(){
         window.localStorage.setItem("Holt-theme", "dark");
@@ -163,34 +162,23 @@ $(document).ready(function() {
         window.localStorage.setItem("Holt-theme", "amoled");
         location.reload();
     });
-    var v = (window.localStorage.key(0), window.localStorage.getItem("Holt-fav"));
-    console.log(v);
-    setTimeout(function(){
-        if (v===""){
-            console.log("New Array");
-            console.log(fav_sounds);
-        }
-        else {
-            var hmm = window.localStorage.getItem("Holt-fav").split(",");
-            fav_sounds = [];
-            $.each(hmm, function(i, el){
-                if($.inArray(el, fav_sounds) === -1) fav_sounds.push(el);
-            });
-            console.log(fav_sounds);
-            window.localStorage.setItem("Holt-fav",fav_sounds);
-        }
-    },1000);
+
     $('.col-4').on('press', function(e) {
         $(this).removeClass("jackInTheBox");
-        $(this).addClass("tada");
+        $(this).addClass("hinge");
         var texto = String($(this).text());
-        if(fav_sounds.includes(texto) === false){
-            fav_sounds.push(texto);
-            window.localStorage.setItem("Holt-fav", fav_sounds);
+        console.log(fav_sounds);
+        var index = fav_sounds.indexOf(texto);
+        if (index > -1) {
+            fav_sounds.splice(index, 1);
         }
+        window.localStorage.setItem("Holt-fav", fav_sounds);
         console.log(window.localStorage.getItem("Holt-fav"));
         setTimeout(function(){
-            $(this).removeClass("tada");
-        },1000);
+            $(this).removeClass("hinge");
+            
+        },2000);
     });
+    },2000);
+    
 });
